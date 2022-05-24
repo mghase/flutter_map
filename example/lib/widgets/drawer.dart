@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map_example/pages/epsg4326_crs.dart';
+import 'package:flutter_map_example/pages/map_inside_listview.dart';
 import 'package:flutter_map_example/pages/marker_rotate.dart';
+import 'package:flutter_map_example/pages/network_tile_provider.dart';
+import 'package:flutter_map_example/pages/point_to_latlng.dart';
 
 import '../pages/animated_map_controller.dart';
 import '../pages/circle.dart';
@@ -11,6 +15,7 @@ import '../pages/live_location.dart';
 import '../pages/many_markers.dart';
 import '../pages/map_controller.dart';
 import '../pages/marker_anchor.dart';
+import '../pages/max_bounds.dart';
 import '../pages/moving_markers.dart';
 import '../pages/offline_map.dart';
 import '../pages/on_tap.dart';
@@ -18,7 +23,9 @@ import '../pages/overlay_image.dart';
 import '../pages/plugin_api.dart';
 import '../pages/plugin_scalebar.dart';
 import '../pages/plugin_zoombuttons.dart';
+import '../pages/polygon.dart';
 import '../pages/polyline.dart';
+import '../pages/reset_tile_layer.dart';
 import '../pages/sliding_map.dart';
 import '../pages/stateful_markers.dart';
 import '../pages/tap_to_add.dart';
@@ -61,6 +68,12 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
         ),
         _buildMenuItem(
           context,
+          const Text('NetworkTileProvider'),
+          NetworkTileProviderPage.route,
+          currentRoute,
+        ),
+        _buildMenuItem(
+          context,
           const Text('WMS Layer'),
           WMSLayerPage.route,
           currentRoute,
@@ -87,6 +100,12 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
           context,
           const Text('Polylines'),
           PolylinePage.route,
+          currentRoute,
+        ),
+        _buildMenuItem(
+          context,
+          const Text('Polygons'),
+          PolygonPage.route,
           currentRoute,
         ),
         _buildMenuItem(
@@ -197,6 +216,12 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
           InteractiveTestPage.route,
           currentRoute,
         ),
+        _buildMenuItem(
+          context,
+          const Text('Max Bounds test page'),
+          MaxBoundsPage.route,
+          currentRoute,
+        ),
         ListTile(
           title: const Text('A lot of markers'),
           selected: currentRoute == ManyMarkersPage.route,
@@ -204,12 +229,30 @@ Drawer buildDrawer(BuildContext context, String currentRoute) {
             Navigator.pushReplacementNamed(context, ManyMarkersPage.route);
           },
         ),
+        ListTile(
+          title: const Text('Reset Tile Layer'),
+          selected: currentRoute == ResetTileLayerPage.route,
+          onTap: () {
+            Navigator.pushReplacementNamed(context, ResetTileLayerPage.route);
+          },
+        ),
+        ListTile(
+          title: const Text('EPSG4326 Crs'),
+          selected: currentRoute == EPSG4326Page.route,
+          onTap: () {
+            Navigator.pushReplacementNamed(context, EPSG4326Page.route);
+          },
+        ),
         _buildMenuItem(
           context,
           const Text('Stateful markers'),
           StatefulMarkersPage.route,
           currentRoute,
-        )
+        ),
+        _buildMenuItem(context, const Text('Map inside listview'),
+            MapInsideListViewPage.route, currentRoute),
+        _buildMenuItem(context, const Text('Point to LatLng'),
+            PointToLatLngPage.route, currentRoute),
       ],
     ),
   );

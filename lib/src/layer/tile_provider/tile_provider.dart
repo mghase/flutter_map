@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
-import 'package:flutter_image/network.dart';
 import 'package:flutter_map/flutter_map.dart';
+
+import 'package:flutter_map/src/layer/tile_provider/network_image_with_retry.dart';
 
 abstract class TileProvider {
   const TileProvider();
@@ -12,14 +11,14 @@ abstract class TileProvider {
   void dispose() {}
 
   String getTileUrl(Coords coords, TileLayerOptions options) {
-    var urlTemplate = (options.wmsOptions != null)
-        ? options.wmsOptions
+    final urlTemplate = (options.wmsOptions != null)
+        ? options.wmsOptions!
             .getUrl(coords, options.tileSize.toInt(), options.retinaMode)
         : options.urlTemplate;
 
-    var z = _getZoomForUrl(coords, options);
+    final z = _getZoomForUrl(coords, options);
 
-    var data = <String, String>{
+    final data = <String, String>{
       'x': coords.x.round().toString(),
       'y': coords.y.round().toString(),
       'z': z.round().toString(),
@@ -29,9 +28,9 @@ abstract class TileProvider {
     if (options.tms) {
       data['y'] = invertY(coords.y.round(), z.round()).toString();
     }
-    var allOpts = Map<String, String>.from(data)
+    final allOpts = Map<String, String>.from(data)
       ..addAll(options.additionalOptions);
-    return options.templateFunction(urlTemplate, allOpts);
+    return options.templateFunction(urlTemplate!, allOpts);
   }
 
   double _getZoomForUrl(Coords coords, TileLayerOptions options) {
@@ -52,7 +51,7 @@ abstract class TileProvider {
     if (options.subdomains.isEmpty) {
       return '';
     }
-    var index = (coords.x + coords.y).round() % options.subdomains.length;
+    final index = (coords.x + coords.y).round() % options.subdomains.length;
     return options.subdomains[index];
   }
 }
@@ -80,18 +79,10 @@ class AssetTileProvider extends TileProvider {
   }
 }
 
-class FileTileProvider extends TileProvider {
-  const FileTileProvider();
-  @override
-  ImageProvider getImage(Coords<num> coords, TileLayerOptions options) {
-    return FileImage(File(getTileUrl(coords, options)));
-  }
-}
-
 class CustomTileProvider extends TileProvider {
   final String Function(Coords coors, TileLayerOptions options) customTileUrl;
 
-  const CustomTileProvider({@required this.customTileUrl});
+  const CustomTileProvider({required this.customTileUrl});
 
   @override
   String getTileUrl(Coords coords, TileLayerOptions options) {

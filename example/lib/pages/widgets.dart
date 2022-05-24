@@ -10,13 +10,15 @@ import '../widgets/drawer.dart';
 class WidgetsPage extends StatelessWidget {
   static const String route = 'widgets';
 
+  const WidgetsPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Widgets')),
+      appBar: AppBar(title: const Text('Widgets')),
       drawer: buildDrawer(context, WidgetsPage.route),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Flexible(
@@ -37,7 +39,7 @@ class WidgetsPage extends StatelessWidget {
                     alignment: Alignment.bottomLeft,
                   )
                 ],
-                nonRotatedChildren: <Widget>[
+                nonRotatedChildren: const <Widget>[
                   Text(
                     'Plugin is just Text widget',
                     style: TextStyle(
@@ -55,7 +57,7 @@ class WidgetsPage extends StatelessWidget {
                       subdomains: ['a', 'b', 'c'],
                     ),
                   ),
-                  MovingWithoutRefreshAllMapMarkers(),
+                  const MovingWithoutRefreshAllMapMarkers(),
                 ],
               ),
             ),
@@ -67,6 +69,8 @@ class WidgetsPage extends StatelessWidget {
 }
 
 class MovingWithoutRefreshAllMapMarkers extends StatefulWidget {
+  const MovingWithoutRefreshAllMapMarkers({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() =>
       _MovingWithoutRefreshAllMapMarkersState();
@@ -74,15 +78,15 @@ class MovingWithoutRefreshAllMapMarkers extends StatefulWidget {
 
 class _MovingWithoutRefreshAllMapMarkersState
     extends State<MovingWithoutRefreshAllMapMarkers> {
-  Marker _marker;
-  Timer _timer;
+  Marker? _marker;
+  Timer? _timer;
   int _markerIndex = 0;
 
   @override
   void initState() {
     super.initState();
     _marker = _markers[_markerIndex];
-    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         _marker = _markers[_markerIndex];
         _markerIndex = (_markerIndex + 1) % _markers.length;
@@ -99,7 +103,7 @@ class _MovingWithoutRefreshAllMapMarkersState
   @override
   Widget build(BuildContext context) {
     return MarkerLayerWidget(
-      options: MarkerLayerOptions(markers: <Marker>[_marker]),
+      options: MarkerLayerOptions(markers: [_marker!]),
     );
   }
 }
@@ -109,24 +113,18 @@ List<Marker> _markers = [
     width: 80.0,
     height: 80.0,
     point: LatLng(51.5, -0.09),
-    builder: (ctx) => Container(
-      child: FlutterLogo(),
-    ),
+    builder: (ctx) => const FlutterLogo(),
   ),
   Marker(
     width: 80.0,
     height: 80.0,
     point: LatLng(53.3498, -6.2603),
-    builder: (ctx) => Container(
-      child: FlutterLogo(),
-    ),
+    builder: (ctx) => const FlutterLogo(),
   ),
   Marker(
     width: 80.0,
     height: 80.0,
     point: LatLng(48.8566, 2.3522),
-    builder: (ctx) => Container(
-      child: FlutterLogo(),
-    ),
+    builder: (ctx) => const FlutterLogo(),
   ),
 ];

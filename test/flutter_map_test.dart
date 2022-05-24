@@ -14,41 +14,47 @@ class MockHttpClientResponse extends Mock implements HttpClientResponse {
   int get statusCode => HttpStatus.ok;
 
   @override
+  int get contentLength => File('test/res/map.png').lengthSync();
+
+  @override
   HttpClientResponseCompressionState get compressionState =>
       HttpClientResponseCompressionState.notCompressed;
 
   @override
-  StreamSubscription<List<int>> listen(void Function(List<int> event) onData,
-      {Function onError, void Function() onDone, bool cancelOnError}) {
-    return _stream.listen(onData,
-        onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+  StreamSubscription<List<int>> listen(void Function(List<int> event)? onData,
+      {Function? onError, void Function()? onDone, bool? cancelOnError}) {
+    return _stream.listen(
+      onData,
+      onError: onError,
+      onDone: onDone,
+      cancelOnError: cancelOnError,
+    );
   }
 
   static Stream<List<int>> readFile() => File('test/res/map.png').openRead();
 }
 
-class MockHttpClientRequest extends Mock implements HttpClientRequest {}
+class MockHttpClientRequest extends Mock implements HttpClientRequest {
+  @override
+  Future<HttpClientResponse> close() => Future.value(MockHttpClientResponse());
+}
 
 class MockClient extends Mock implements HttpClient {
   @override
   Future<HttpClientRequest> getUrl(Uri url) {
-    final request = MockHttpClientRequest();
-    when(request.close()).thenAnswer((_) async {
-      return MockHttpClientResponse();
-    });
-    return Future.value(request);
+    return Future.value(MockHttpClientRequest());
   }
 }
 
 class MockHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext securityContext) => MockClient();
+  HttpClient createHttpClient(SecurityContext? securityContext) => MockClient();
 }
 
 void main() {
   testWidgets('flutter_map', (tester) async {
     HttpOverrides.global = MockHttpOverrides();
-    await tester.pumpWidget(TestApp());
+    await tester.pumpWidget(const TestApp());
     expect(find.byType(FlutterMap), findsOneWidget);
     expect(find.byType(TileLayer), findsOneWidget);
     expect(find.byType(RawImage), findsWidgets);
@@ -58,27 +64,25 @@ void main() {
 }
 
 class TestApp extends StatefulWidget {
+  const TestApp({Key? key}) : super(key: key);
+
   @override
-  _TestAppState createState() => _TestAppState();
+  State<TestApp> createState() => _TestAppState();
 }
 
 class _TestAppState extends State<TestApp> {
   final List<Marker> _markers = <Marker>[
     Marker(
-      width: 80.0,
-      height: 80.0,
+      width: 80,
+      height: 80,
       point: LatLng(45.5231, -122.6765),
-      builder: (ctx) => Container(
-        child: FlutterLogo(),
-      ),
+      builder: (ctx) => const FlutterLogo(),
     ),
     Marker(
-      width: 80.0,
-      height: 80.0,
+      width: 80,
+      height: 80,
       point: LatLng(40, -120), // not visible
-      builder: (ctx) => Container(
-        child: FlutterLogo(),
-      ),
+      builder: (ctx) => const FlutterLogo(),
     ),
   ];
 
@@ -92,13 +96,13 @@ class _TestAppState extends State<TestApp> {
     return MaterialApp(
       home: Scaffold(
         body: Center(
-          child: Container(
+          child: SizedBox(
             width: 200,
             height: 200,
             child: FlutterMap(
               options: MapOptions(
                 center: LatLng(45.5231, -122.6765),
-                zoom: 13.0,
+                zoom: 13,
               ),
               layers: [
                 TileLayerOptions(

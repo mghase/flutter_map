@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
 
-import 'map.dart';
+import 'package:flutter_map/src/map/map.dart';
 
 class MapStateInheritedWidget extends InheritedWidget {
   final MapState mapState;
 
-  MapStateInheritedWidget({
-    Key key,
-    @required this.mapState,
-    @required Widget child,
+  const MapStateInheritedWidget({
+    Key? key,
+    required this.mapState,
+    required Widget child,
   }) : super(key: key, child: child);
 
   @override
@@ -19,7 +19,7 @@ class MapStateInheritedWidget extends InheritedWidget {
     return true;
   }
 
-  static MapStateInheritedWidget of(BuildContext context) {
+  static MapStateInheritedWidget? maybeOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<MapStateInheritedWidget>();
   }

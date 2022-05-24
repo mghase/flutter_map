@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,9 +8,9 @@ class OverlayImageLayerOptions extends LayerOptions {
   final List<OverlayImage> overlayImages;
 
   OverlayImageLayerOptions({
-    Key key,
+    Key? key,
     this.overlayImages = const [],
-    Stream<Null> rebuild,
+    Stream<void>? rebuild,
   }) : super(key: key, rebuild: rebuild);
 }
 
@@ -22,8 +21,8 @@ class OverlayImage {
   final bool gaplessPlayback;
 
   OverlayImage({
-    this.bounds,
-    this.imageProvider,
+    required this.bounds,
+    required this.imageProvider,
     this.opacity = 1.0,
     this.gaplessPlayback = false,
   });
@@ -32,11 +31,12 @@ class OverlayImage {
 class OverlayImageLayerWidget extends StatelessWidget {
   final OverlayImageLayerOptions options;
 
-  OverlayImageLayerWidget({Key key, @required this.options}) : super(key: key);
+  const OverlayImageLayerWidget({Key? key, required this.options})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final mapState = MapState.of(context);
+    final mapState = MapState.maybeOf(context)!;
     return OverlayImageLayer(options, mapState, mapState.onMoved);
   }
 }
@@ -44,7 +44,7 @@ class OverlayImageLayerWidget extends StatelessWidget {
 class OverlayImageLayer extends StatelessWidget {
   final OverlayImageLayerOptions overlayImageOpts;
   final MapState map;
-  final Stream<Null> stream;
+  final Stream<void>? stream;
 
   OverlayImageLayer(this.overlayImageOpts, this.map, this.stream)
       : super(key: overlayImageOpts.key);

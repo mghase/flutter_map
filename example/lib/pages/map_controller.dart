@@ -10,6 +10,8 @@ import '../widgets/drawer.dart';
 class MapControllerPage extends StatefulWidget {
   static const String route = 'map_controller';
 
+  const MapControllerPage({Key? key}) : super(key: key);
+
   @override
   MapControllerPageState createState() {
     return MapControllerPageState();
@@ -21,7 +23,7 @@ class MapControllerPageState extends State<MapControllerPage> {
   static LatLng paris = LatLng(48.8566, 2.3522);
   static LatLng dublin = LatLng(53.3498, -6.2603);
 
-  MapController mapController;
+  late final MapController mapController;
   double rotation = 0.0;
 
   @override
@@ -38,19 +40,17 @@ class MapControllerPageState extends State<MapControllerPage> {
         height: 80.0,
         point: london,
         builder: (ctx) => Container(
-          key: Key('blue'),
-          child: FlutterLogo(),
+          key: const Key('blue'),
+          child: const FlutterLogo(),
         ),
       ),
       Marker(
         width: 80.0,
         height: 80.0,
         point: dublin,
-        builder: (ctx) => Container(
-          child: FlutterLogo(
-            key: Key('green'),
-            textColor: Colors.green,
-          ),
+        builder: (ctx) => const FlutterLogo(
+          key: Key('green'),
+          textColor: Colors.green,
         ),
       ),
       Marker(
@@ -58,47 +58,47 @@ class MapControllerPageState extends State<MapControllerPage> {
         height: 80.0,
         point: paris,
         builder: (ctx) => Container(
-          key: Key('purple'),
-          child: FlutterLogo(textColor: Colors.purple),
+          key: const Key('purple'),
+          child: const FlutterLogo(textColor: Colors.purple),
         ),
       ),
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text('MapController')),
+      appBar: AppBar(title: const Text('MapController')),
       drawer: buildDrawer(context, MapControllerPage.route),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Row(
                 children: <Widget>[
                   MaterialButton(
                     onPressed: () {
                       mapController.move(london, 18.0);
                     },
-                    child: Text('London'),
+                    child: const Text('London'),
                   ),
                   MaterialButton(
                     onPressed: () {
                       mapController.move(paris, 5.0);
                     },
-                    child: Text('Paris'),
+                    child: const Text('Paris'),
                   ),
                   MaterialButton(
                     onPressed: () {
                       mapController.move(dublin, 5.0);
                     },
-                    child: Text('Dublin'),
+                    child: const Text('Dublin'),
                   ),
                   CurrentLocation(mapController: mapController),
                 ],
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Row(
                 children: <Widget>[
                   MaterialButton(
@@ -109,17 +109,17 @@ class MapControllerPageState extends State<MapControllerPage> {
                       bounds.extend(london);
                       mapController.fitBounds(
                         bounds,
-                        options: FitBoundsOptions(
+                        options: const FitBoundsOptions(
                           padding: EdgeInsets.only(left: 15.0, right: 15.0),
                         ),
                       );
                     },
-                    child: Text('Fit Bounds'),
+                    child: const Text('Fit Bounds'),
                   ),
                   Builder(builder: (BuildContext context) {
                     return MaterialButton(
                       onPressed: () {
-                        final bounds = mapController.bounds;
+                        final bounds = mapController.bounds!;
 
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
@@ -131,10 +131,10 @@ class MapControllerPageState extends State<MapControllerPage> {
                           ),
                         ));
                       },
-                      child: Text('Get Bounds'),
+                      child: const Text('Get Bounds'),
                     );
                   }),
-                  Text('Rotation:'),
+                  const Text('Rotation:'),
                   Expanded(
                     child: Slider(
                       value: rotation,
@@ -178,8 +178,8 @@ class MapControllerPageState extends State<MapControllerPage> {
 
 class CurrentLocation extends StatefulWidget {
   const CurrentLocation({
-    Key key,
-    @required this.mapController,
+    Key? key,
+    required this.mapController,
   }) : super(key: key);
 
   final MapController mapController;
@@ -192,7 +192,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
   int _eventKey = 0;
 
   var icon = Icons.gps_not_fixed;
-  StreamSubscription<MapEvent> mapEventSubscription;
+  late final StreamSubscription<MapEvent> mapEventSubscription;
 
   @override
   void initState() {
@@ -229,7 +229,7 @@ class _CurrentLocationState extends State<CurrentLocation> {
     try {
       var currentLocation = await location.getLocation();
       var moved = widget.mapController.move(
-        LatLng(currentLocation.latitude, currentLocation.longitude),
+        LatLng(currentLocation.latitude!, currentLocation.longitude!),
         18,
         id: _eventKey.toString(),
       );

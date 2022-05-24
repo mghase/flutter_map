@@ -1,3 +1,40 @@
+## [0.14.0] - 6/7/2021
+This version contains the following changes
+- Added scroll wheel zoom support for web
+- Added TapPosition to TapCallback
+- Added center to LatLngBounds
+- Added equality operators for LatLngBounds and MapPosition
+- Added support for resetting TileLayer cache
+- Added attribution builder to TileLayer
+- Added 'inside' parameter to FitBoundsOptions
+- Added centerZoomFitBounds to MapController
+- Added vector_map_tiles to plugin section in README
+- Added option to prevent Scrollable widgets from snatching horizontal scrolling gestures
+
+Thanks to moehme, Tom Prebble, Binabh, ondbyte, Sébastien Dabet, Thomas Lüder, Kevin Thorne, 
+kimlet, TheOneWithTheBraid, David Green and Kenneth Gulbrandsøy. 
+
+## [0.13.1] - 6/7/2021
+This version contains hotfixes from null safety migration.
+
+## [0.13.0] - 6/4/2021
+This version has support for sound null safety. For this purpose, some inactive
+packages were exchanged with active forks.
+
+- Sound null safety migration (#851, #870)
+  - requires flutter version 2.0.0 or higher
+  - latlong is replaced with latlong2
+  - ready-flag on map has been removed
+- Remove the package flutter_image and add http instead (#894)
+  - http has to be version 0.13.2 or higher for this package (#894)
+- Removed deprecated properties
+  - debug property has been removed
+  - interactive has been replaced by interactiveFlags
+- Bounds getCenter has been replaced by center getter
+
+Thanks to escamoteur, ThexXTURBOXx, Sata51, tazik561, kengu, passsy,
+Ahmed-gubara, johnpryan, josxha and andreandersson for this release!
+
 ## [0.12.0] - 3/16/2021
 TileLayerOptions now takes some additional options, templateFunction,
 tileBuilder, tilesContainerBuilder, and evictErrorTileStrategy
@@ -21,7 +58,8 @@ be implemented in your app or in a separate package.
 thanks to maRci002, escamoteur, and Xennis for this release!
 
 ## [0.10.2] - 10/29/2020
-- added property `allowPanning` to `MapOptions` that allows to disable only panning while touch events are still triggered
+- added property `allowPanning` to `MapOptions` that allows to disable only
+  panning while touch events are still triggered
 
 ## [0.10.1+1] - 8/4/2020
 - fix possible issue with code published in previous version

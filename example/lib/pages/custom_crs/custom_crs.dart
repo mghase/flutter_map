@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
@@ -9,35 +8,37 @@ import '../../widgets/drawer.dart';
 class CustomCrsPage extends StatefulWidget {
   static const String route = 'custom_crs';
 
+  const CustomCrsPage({Key? key}) : super(key: key);
+
   @override
   _CustomCrsPageState createState() => _CustomCrsPageState();
 }
 
 class _CustomCrsPageState extends State<CustomCrsPage> {
-  Proj4Crs epsg3413CRS;
+  late final Proj4Crs epsg3413CRS;
 
-  double maxZoom;
+  double? maxZoom;
 
   // Define start center
   proj4.Point point = proj4.Point(x: 65.05166470332148, y: -19.171744826394896);
 
   String initText = 'Map centered to';
 
-  proj4.Projection epsg4326;
+  late final proj4.Projection epsg4326;
 
-  proj4.Projection epsg3413;
+  late final proj4.Projection epsg3413;
 
   @override
   void initState() {
     super.initState();
 
     // EPSG:4326 is a predefined projection ships with proj4dart
-    epsg4326 = proj4.Projection('EPSG:4326');
+    epsg4326 = proj4.Projection.get('EPSG:4326')!;
 
     // EPSG:3413 is a user-defined projection from a valid Proj4 definition string
     // From: http://epsg.io/3413, proj definition: http://epsg.io/3413.proj4
     // Find Projection by name or define it if not exists
-    epsg3413 = proj4.Projection('EPSG:3413') ??
+    epsg3413 = proj4.Projection.get('EPSG:3413') ??
         proj4.Projection.add('EPSG:3413',
             '+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
 
@@ -55,8 +56,8 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
     ];
 
     final epsg3413Bounds = Bounds<double>(
-      CustomPoint<double>(-4511619.0, -4511336.0),
-      CustomPoint<double>(4510883.0, 4510996.0),
+      const CustomPoint<double>(-4511619.0, -4511336.0),
+      const CustomPoint<double>(4510883.0, 4510996.0),
     );
 
     maxZoom = (resolutions.length - 1).toDouble();
@@ -77,7 +78,7 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
       // Some goeserver changes origin based on zoom level
       // and some are not at all (use explicit/implicit null or use [CustomPoint(0, 0)])
       // @see https://github.com/kartena/Proj4Leaflet/pull/171
-      origins: [CustomPoint(0, 0)],
+      origins: [const CustomPoint(0, 0)],
       // Scale factors (pixels per projection unit, for example pixels/meter) for zoom levels;
       // specify either scales or resolutions, not both
       scales: null,
@@ -89,13 +90,13 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Custom CRS')),
+      appBar: AppBar(title: const Text('Custom CRS')),
       drawer: buildDrawer(context, CustomCrsPage.route),
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 8.0, bottom: 2.0),
               child: Text(
                 'This map is in EPSG:3413',
@@ -107,18 +108,18 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 8.0, bottom: 2.0),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 2.0),
               child: Text(
                 '$initText (${point.x.toStringAsFixed(5)}, ${point.y.toStringAsFixed(5)}) in EPSG:4326.',
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: 2.0, bottom: 2.0),
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
               child: Text(
                 'Which is (${epsg4326.transform(epsg3413, point).x.toStringAsFixed(2)}, ${epsg4326.transform(epsg3413, point).y.toStringAsFixed(2)}) in EPSG:3413.',
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.only(top: 2.0, bottom: 8.0),
               child: Text('Tap on map to get more coordinates!'),
             ),
@@ -132,7 +133,7 @@ class _CustomCrsPageState extends State<CustomCrsPage> {
                   // Set maxZoom usually scales.length - 1 OR resolutions.length - 1
                   // but not greater
                   maxZoom: maxZoom,
-                  onTap: (p) => setState(() {
+                  onTap: (tapPosition, p) => setState(() {
                     initText = 'You clicked at';
                     point = proj4.Point(x: p.latitude, y: p.longitude);
                   }),
